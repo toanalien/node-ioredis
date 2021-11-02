@@ -1,0 +1,29 @@
+version: "3.8"
+
+networks:
+  demo-tier:
+    driver: bridge
+
+services:
+  app:
+    container_name: app
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - demo-tier
+  redis:
+    container_name: redis
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    expose:
+      - 6379
+    restart: always
+    networks:
+      - demo-tier
